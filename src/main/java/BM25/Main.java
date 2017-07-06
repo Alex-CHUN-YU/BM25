@@ -18,7 +18,7 @@ public class Main {
      */
     public static void main(final String[] args) throws IOException {
         BM25 calculator = new BM25();
-        System.out.println("請輸入一句Demo中的話");
+        System.out.println("請輸入一句Demo中的句子");
         while (true) {
             Scanner scanner = new Scanner(System.in);
             String sentence = scanner.nextLine();
