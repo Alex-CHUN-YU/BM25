@@ -24,6 +24,7 @@ public class Main {
             String sentence = scanner.nextLine();
             System.out.print("Data中最接近的句子:");
             System.out.println(calculator.rankBM25(sentence));
+            
         }
     }
 }
