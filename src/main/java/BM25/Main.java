@@ -22,7 +22,7 @@ public class Main {
         while (true) {
             Scanner scanner = new Scanner(System.in);
             String sentence = scanner.nextLine();
-            System.out.print("Data中最接近的話:");
+            System.out.print("Data中最接近的句子:");
             System.out.println(calculator.rankBM25(sentence));
         }
     }
