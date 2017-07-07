@@ -17,6 +17,7 @@ public class Main {
      *
      */
     public static void main(final String[] args) throws IOException {
+        
         BM25 calculator = new BM25();
         System.out.println("請輸入一句Demo中的句子");
         while (true) {
@@ -24,7 +25,8 @@ public class Main {
             String sentence = scanner.nextLine();
             System.out.print("Data中最接近的句子:");
             System.out.println(calculator.rankBM25(sentence));
-            
         }
+        
     }
+    
 }
