@@ -9,11 +9,14 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+             
         <!-- https://mvnrepository.com/artifact/tw.cheyingwu/CKIPClient -->
         <dependency>
             <groupId>tw.cheyingwu</groupId>
             <artifactId>CKIPClient</artifactId>
             <version>0.4.3</version>
         </dependency>
+             
     </dependencies>
+         
 </project>
