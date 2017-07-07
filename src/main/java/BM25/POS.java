@@ -2,7 +2,6 @@ package BM25;
 
 import java.util.ArrayList;
 
-
 import tw.cheyingwu.ckip.CKIP;
 import tw.cheyingwu.ckip.Term;
 
@@ -85,15 +84,9 @@ public class POS {
      *
      */
     public static class Tuple<X, Y> {
-
-        /**
-         * X segmentWord.
-         */
+        //X segmentWord.
         private X word;
-
-        /**
-         * Y segmentWord.
-         */
+        //Y segmentWord.
         private Y getPos;
 
         /**
@@ -122,4 +115,5 @@ public class POS {
             this.getPos = y;
         }
     }
+    
 }
