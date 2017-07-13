@@ -42,12 +42,12 @@ public class BM25 {
     private static ArrayList<String> demoDocument = new ArrayList<String>();
 
     /**
-     * Free parameter, usually chosen as k1 = 2.0.
+     * Free parameter, usually chosen as k1 = 1.2. range: 1.2 ~ 2.0 越少飽和速率越快!
      */
     private double k1;
 
     /**
-     * Free parameter, usually chosen as b = 0.75.
+     * Free parameter, usually chosen as b = 0.75. range: 0 ~ 1.0 越接近1,文檔的長度歸約化到全部文檔的平均長度上越大
      */
     private double b;
 
