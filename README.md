@@ -1,5 +1,5 @@
 # BM25
-![demo](https://github.com/Alex-CHUN-YU/BM25/blob/master/image/demo.png)</br></br></br>
+![demo](https://github.com/Alex-CHUN-YU/BM25/blob/master/image/demo.png)</br></br>
 資訊檢索(Information Retrieval)中 Okapi BM25 （BM代表最佳匹配）扮演著一種排名的方法，通常使用於搜索引擎，根據給定的搜索句子再找出排名匹配文檔最有關係之文檔。</br>
 註:由於此為 demo project 故沒有，有效利用 BM25 該有之特性，它應適用於較長文件進行比對較為適合。</br>
 * 計算文件與文件之間的相關性</br>
