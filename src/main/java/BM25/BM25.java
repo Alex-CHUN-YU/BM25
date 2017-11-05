@@ -8,23 +8,26 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import BM25.POS.Tuple;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * The BM25 weighting scheme, often called Okapi weighting.
+ * 計算文件與文件之間的相關性
+ * @version 1.0 2017年4月27日
+ * @author ALEX-CHUN-YU
  */
 public class BM25 {
-
     /**
      * CKIP POS.
      */
-    private static ArrayList<Tuple<String, String>> pos = new ArrayList<Tuple<String, String>>();
+    private static ArrayList<Tuple<String, String>> sentenceSegResult = new ArrayList<Tuple<String, String>>();
 
     /**
      * Storage question.
      */
-    private static Map<ArrayList<String>, String> map = new HashMap<ArrayList<String>, String>();
+    private static Map<ArrayList<String>, String> corpusHashmap = new HashMap<ArrayList<String>, String>();
 
     /**
      * Corpus.
@@ -32,14 +35,9 @@ public class BM25 {
     private static ArrayList<ArrayList<String>> documentList = new ArrayList<ArrayList<String>>();
 
     /**
-     * Doc Of Corpus.
-     */
-    private static ArrayList<String> doc = new ArrayList<String>();
-
-    /**
      * Test Document.
      */
-    private static ArrayList<String> demoDocument = new ArrayList<String>();
+    private static ArrayList<String> allTermsInCorpus = new ArrayList<String>();
 
     /**
      * Free parameter, usually chosen as k1 = 1.2. range: 1.2 ~ 2.0 越少飽和速率越快!
@@ -53,14 +51,14 @@ public class BM25 {
 
     /**
      * Default constructor with k1 = 1.2, b = 0.75.
-     * @throws IOException
+     * @throws IOException IOException
      */
     public BM25() throws IOException {
         this(1.2, 0.75);
     }
 
     /**
-     * Constructor 主要負責將data載入以方便後續計算.
+     * Constructor 主要負責將 Data 載入以方便後續計算.
      *
      * @param k1 is a positive tuning parameter that calibrates
      * the document term frequency scaling. A k1 value of 0 corresponds to a
@@ -70,7 +68,7 @@ public class BM25 {
      * the scaling by document length: b = 1 corresponds to fully scaling the
      * term weight by the document length, while b = 0 corresponds to no length
      * normalization.
-     * @throws IOException */
+     * @throws IOException IOException */
     public BM25(final double k1, final double b) throws IOException {
         if (k1 < 0) {
             throw new IllegalArgumentException("Negative k1 = " + k1);
@@ -80,7 +78,7 @@ public class BM25 {
         }
         this.k1 = k1;
         this.b = b;
-        POS ws = new POS();
+        POS posCKIP = new POS();
         //Produce Dictionary
         File file = new File(".");
         String path = file.getCanonicalPath();
@@ -89,24 +87,24 @@ public class BM25 {
         String fileName = path + fileSeparator + "src//main//resources//TestFile.txt";
         InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName), "UTF-8");
         BufferedReader read = new BufferedReader(isr);
-        String str;
-        // Read File
-        while ((str = read.readLine()) != null) {
+        String sentence;
+        ArrayList<String> document;
+        // Load BM25 Need Data
+        while ((sentence = read.readLine()) != null) {
             //Each Sentence As A Doc
-            doc = new ArrayList<String>();
+            document = new ArrayList<String>();
             //Result Of POS
-            pos = ws.seg(str);
+            sentenceSegResult = posCKIP.seg(sentence);
             //Each Sentence Result Of POS
-            for (int i = 0; i < pos.size(); i++) {
-                //System.out.print(pos.get(i).getWord());
-                doc.add(pos.get(i).getWord());
+            for (Tuple<String, String> segment : sentenceSegResult) {
+                document.add(segment.getWord());
             }
-            //System.out.println();
-            //Calculate IDF Corpus
-            documentList.add(doc);
-            //Calculate TF Corpus
-            demoDocument.addAll(doc);
-            map.put(doc, str);
+            // Calculate IDF Corpus
+            documentList.add(document);
+            // Calculate TF Corpus
+            allTermsInCorpus.addAll(document);
+            // 儲存資料匹配的數據
+            corpusHashmap.put(document, sentence);
         }
         // Close Reader
         isr.close();
@@ -114,24 +112,23 @@ public class BM25 {
     }
 
     /**
-     * 此tf有加入BM25之兩個參數進去k1(飽和程度，例如10個term為上限) and b(文件與文件建立於相同條件上).
+     * 此 TF 有加入 BM25 之兩個參數進去 k1(飽和程度，例如10個term為上限) and b(文件與文件建立於相同條件上).
      * @param tfDocument list of strings
      * @param term String represents a term
      * @return term frequency of term in document
      */
     public double tf(final ArrayList<String> tfDocument, final String term) {
-        //文件中(句子)指定term的出現頻率
+        // 文件中(句子)指定 term 的出現頻率
         double freq = 0;
-        //平均每個文件的term數量
-        double avgDocSize = (demoDocument.size() / documentList.size());
+        //平均每個文件的 term 數量
+        double avgDocSize = (allTermsInCorpus.size() / documentList.size());
         for (String word : tfDocument) {
             if (term.equalsIgnoreCase(word)) {
                 freq++;
             }
         }
         //BM25 TF演算法
-        double tf = (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * (tfDocument.size()) / avgDocSize));
-        return tf;
+        return (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * (tfDocument.size()) / avgDocSize));
     }
 
     /**
@@ -154,16 +151,16 @@ public class BM25 {
     }
 
     /**
-     * rank the score.
+     * Rank The Score.
      * @param tfDoc Each Document TF
      * @param corpus Corpus
-     * @param terms terms of question
+     * @param termList terms of question
      * @return the TF-IDF of term
      */
-    public double score(final ArrayList<String> tfDoc, final ArrayList<ArrayList<String>> corpus,
-                        final ArrayList<String> terms) {
+    public double score(final ArrayList<String> tfDoc, final ArrayList<String> termList,
+                        final ArrayList<ArrayList<String>> corpus) {
         double sumScore = 0.0;
-        for (String term : terms) {
+        for (String term : termList) {
             sumScore += tf(tfDoc, term) * idf(corpus, term);
         }
         return sumScore;
@@ -171,30 +168,28 @@ public class BM25 {
 
     /**
      * Rank Answer By BM25.
-     * @throws IOException except
      * @param question is our question
      */
     public String rankBM25(final String question) {
-        ArrayList<String> MaxScore = new ArrayList<String>();
-        ArrayList<String> terms = new ArrayList<String>();
-        POS questionTerm = new POS();
-        pos = questionTerm.seg(question);
-        for (int i = 0; i < pos.size(); i++) {
-            //System.out.print("[" + pos.get(i).getWord() + pos.get(i).getPos() + "] ");
-            terms.add(pos.get(i).getWord());
+        ArrayList<String> maxScoreDocument = new ArrayList<String>();
+        ArrayList<String> segmentList = new ArrayList<String>();
+        POS posCKIP = new POS();
+        sentenceSegResult = posCKIP.seg(question);
+        for (Tuple<String, String> segment : sentenceSegResult) {
+            segmentList.add(segment.getWord());
         }
+        double maxScore = 0;
         double score;
-        double max = 0;
-        //tfDoc為每個文件(句子)的term
-        for (ArrayList<String> tfDoc : documentList) {
-            //計算每個文件(句子)與輸入的句子之分數
-            score = this.score(tfDoc, documentList, terms);
-            if (score > max) {
-                max = score;
-                MaxScore = tfDoc;
+        // document 為每個文件(句子)的 term list
+        for (ArrayList<String> document : documentList) {
+            // 計算每個文件(句子)與輸入的句子之分數
+            score = this.score(document, segmentList, documentList);
+            if (score > maxScore) {
+                maxScore = score;
+                maxScoreDocument = document;
             }
         }
-        return map.get(MaxScore);
+        // 取出最佳匹配的數據
+        return corpusHashmap.get(maxScoreDocument);
     }
-    
 }

@@ -6,14 +6,13 @@ import tw.cheyingwu.ckip.CKIP;
 import tw.cheyingwu.ckip.Term;
 
 /**
- * CKIP Part of Speech.
+ * 中研院斷詞 CKIP Part Of Speech.
  *
  * @version 1.0 2017年4月27日
- * @author NCKU WMMKS LAB
+ * @author ALEX-CHUN-YU
  *
  */
 public class POS {
-
     /**
      * CKIP serverIP.
      */
@@ -40,14 +39,14 @@ public class POS {
     private CKIP connection;
 
     /**
-     * CKIP connect.
+     * CKIP Connect.
      */
     public POS() {
         connect(serverIP, Integer.parseInt(serverPort), userName, password);
     }
 
     /**
-     * CKIP connect.
+     * CKIP Connect.
      * @param serverIPTemp CKIP serverIP
      * @param serverPortTemp CKIP serverPort
      * @param userNameTemp CKIP userName
@@ -59,21 +58,20 @@ public class POS {
     }
 
     /**
-     * CKIP connect.
+     * CKIP Segment.
      *
-     * @param sentence
-     *            Segment
-     * @return object
+     * @param sentence sentence
+     * @return sentence segment result (Tuple Format)
      */
     public ArrayList<Tuple<String, String>> seg(final String sentence) {
-        ArrayList<Tuple<String, String>> wsResult = new ArrayList<Tuple<String, String>>();
+        ArrayList<Tuple<String, String>> sentenceSegResult = new ArrayList<Tuple<String, String>>();
         connection.setRawText(sentence);
         connection.send();
         for (Term t : connection.getTerm()) {
             Tuple<String, String> pair = new Tuple<String, String>(t.getTerm(), t.getTag());
-            wsResult.add(pair);
+            sentenceSegResult.add(pair);
         }
-        return wsResult;
+        return sentenceSegResult;
     }
 
     /**
@@ -115,5 +113,4 @@ public class POS {
             this.getPos = y;
         }
     }
-    
 }
