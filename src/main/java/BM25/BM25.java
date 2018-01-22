@@ -27,7 +27,7 @@ public class BM25 {
     /**
      * Storage question.
      */
-    private static Map<ArrayList<String>, String> corpusHashmap = new HashMap<ArrayList<String>, String>();
+    private static Map<ArrayList<String>, String> corpusHashMap = new HashMap<ArrayList<String>, String>();
 
     /**
      * Corpus.
@@ -104,7 +104,7 @@ public class BM25 {
             // Calculate TF Corpus
             allTermsInCorpus.addAll(document);
             // 儲存資料匹配的數據
-            corpusHashmap.put(document, sentence);
+            corpusHashMap.put(document, sentence);
         }
         // Close Reader
         isr.close();
@@ -190,6 +190,6 @@ public class BM25 {
             }
         }
         // 取出最佳匹配的數據
-        return corpusHashmap.get(maxScoreDocument);
+        return corpusHashMap.get(maxScoreDocument);
     }
 }
