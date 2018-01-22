@@ -132,13 +132,12 @@ public class BM25 {
     }
 
     /**
-     * @param corpus list of list of strings represents the DataSet
      * @param term String represents a term
      * @return the inverse term frequency of term in documents
      */
-    public double idf(final ArrayList<ArrayList<String>> corpus, final String term) {
+    public double idf(final String term) {
         double count = 0;
-        for (ArrayList<String> idfDoc : corpus) {
+        for (ArrayList<String> idfDoc : documentList) {
             for (String word : idfDoc) {
                 if (term.equalsIgnoreCase(word)) {
                     count++;
@@ -147,21 +146,19 @@ public class BM25 {
             }
         }
         //count + 1 avoid infinity
-        return Math.log((corpus.size() - count + 0.5) / (count + 0.5));
+        return Math.log((documentList.size() - count + 0.5) / (count + 0.5));
     }
 
     /**
-     * Rank The Score.
+     * Rank The Score(BM25 Ranking Score).
      * @param tfDoc Each Document TF
-     * @param corpus Corpus
      * @param termList terms of question
      * @return the TF-IDF of term
      */
-    public double score(final ArrayList<String> tfDoc, final ArrayList<String> termList,
-                        final ArrayList<ArrayList<String>> corpus) {
+    public double score(final ArrayList<String> tfDoc, final ArrayList<String> termList) {
         double sumScore = 0.0;
         for (String term : termList) {
-            sumScore += tf(tfDoc, term) * idf(corpus, term);
+            sumScore += tf(tfDoc, term) * idf(term);
         }
         return sumScore;
     }
@@ -183,7 +180,7 @@ public class BM25 {
         // document 為每個文件(句子)的 term list
         for (ArrayList<String> document : documentList) {
             // 計算每個文件(句子)與輸入的句子之分數
-            score = this.score(document, segmentList, documentList);
+            score = this.score(document, segmentList);
             if (score > maxScore) {
                 maxScore = score;
                 maxScoreDocument = document;
