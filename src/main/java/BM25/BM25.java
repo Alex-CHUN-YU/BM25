@@ -25,9 +25,9 @@ public class BM25 {
     private static ArrayList<Tuple<String, String>> sentenceSegResult = new ArrayList<Tuple<String, String>>();
 
     /**
-     * Storage question.
+     * Test Document.
      */
-    private static Map<ArrayList<String>, String> corpusHashMap = new HashMap<ArrayList<String>, String>();
+    private static ArrayList<String> allTermsInCorpus = new ArrayList<String>();
 
     /**
      * Corpus.
@@ -35,9 +35,19 @@ public class BM25 {
     private static ArrayList<ArrayList<String>> documentList = new ArrayList<ArrayList<String>>();
 
     /**
-     * Test Document.
+     * Storage question.
      */
-    private static ArrayList<String> allTermsInCorpus = new ArrayList<String>();
+    private static Map<ArrayList<String>, String> corpusHashMap = new HashMap<ArrayList<String>, String>();
+
+    /**
+     * BM25 Max Score Document.
+     */
+    private static ArrayList<String> maxScoreDocument = new ArrayList<String>();
+
+    /**
+     * BM25 Max Score.
+     */
+    private static double maxScore = 0;
 
     /**
      * Free parameter, usually chosen as k1 = 1.2. range: 1.2 ~ 2.0 越少飽和速率越快!
@@ -117,7 +127,7 @@ public class BM25 {
      * @param term String represents a term
      * @return term frequency of term in document
      */
-    public double tf(final ArrayList<String> tfDocument, final String term) {
+    private double tf(final ArrayList<String> tfDocument, final String term) {
         // 文件中(句子)指定 term 的出現頻率
         double freq = 0;
         //平均每個文件的 term 數量
@@ -135,7 +145,7 @@ public class BM25 {
      * @param term String represents a term
      * @return the inverse term frequency of term in documents
      */
-    public double idf(final String term) {
+    private double idf(final String term) {
         double count = 0;
         for (ArrayList<String> idfDoc : documentList) {
             for (String word : idfDoc) {
@@ -155,7 +165,7 @@ public class BM25 {
      * @param termList terms of question
      * @return the TF-IDF of term
      */
-    public double score(final ArrayList<String> tfDoc, final ArrayList<String> termList) {
+    private double score(final ArrayList<String> tfDoc, final ArrayList<String> termList) {
         double sumScore = 0.0;
         for (String term : termList) {
             sumScore += tf(tfDoc, term) * idf(term);
@@ -167,15 +177,13 @@ public class BM25 {
      * Rank Answer By BM25.
      * @param question is our question
      */
-    public String rankBM25(final String question) {
-        ArrayList<String> maxScoreDocument = new ArrayList<String>();
+    public void rankBM25(final String question) {
         ArrayList<String> segmentList = new ArrayList<String>();
         POS posCKIP = new POS();
         sentenceSegResult = posCKIP.seg(question);
         for (Tuple<String, String> segment : sentenceSegResult) {
             segmentList.add(segment.getWord());
         }
-        double maxScore = 0;
         double score;
         // document 為每個文件(句子)的 term list
         for (ArrayList<String> document : documentList) {
@@ -186,7 +194,21 @@ public class BM25 {
                 maxScoreDocument = document;
             }
         }
+    }
+
+    /**
+     * Get Max Score Doc String.
+     */
+    public String getMaxScoreDocument() {
         // 取出最佳匹配的數據
         return corpusHashMap.get(maxScoreDocument);
+    }
+
+    /**
+     * Get Max Score Of Doc.
+     */
+    public double getMaxScoreOfDoc() {
+        // 取出最佳匹配的數據之分數
+        return maxScore;
     }
 }

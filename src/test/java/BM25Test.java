@@ -1,4 +1,6 @@
-package BM25;
+
+
+import BM25.BM25;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -6,7 +8,7 @@ import java.util.Scanner;
 /**
  * Created by alex on 2017/7/6.
  */
-public class Main {
+public class BM25Test {
     /**
      *
      * Main Function BM25 Test.
@@ -22,8 +24,11 @@ public class Main {
         while (true) {
             Scanner scanner = new Scanner(System.in);
             String question = scanner.nextLine();
+            calculator.rankBM25(question);
             System.out.print("Data中最接近的句子:");
-            System.out.println(calculator.rankBM25(question));
+            System.out.println(calculator.getMaxScoreDocument());
+            System.out.print("分數為:");
+            System.out.println(calculator.getMaxScoreOfDoc());
         }
     }
 }

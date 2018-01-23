@@ -4,19 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>BM25</groupId>
+    <groupId>IR</groupId>
     <artifactId>BM25</artifactId>
     <version>1.0-SNAPSHOT</version>
-
     <dependencies>
-             
+
         <!-- https://mvnrepository.com/artifact/tw.cheyingwu/CKIPClient -->
         <dependency>
             <groupId>tw.cheyingwu</groupId>
             <artifactId>CKIPClient</artifactId>
             <version>0.4.3</version>
         </dependency>
-             
+
     </dependencies>
-         
 </project>
