@@ -22,10 +22,15 @@ public class BM25 {
     /**
      * CKIP POS.
      */
+    private POS posCKIP = new POS();
+
+    /**
+     * Query Segment.
+     */
     private static ArrayList<Tuple<String, String>> sentenceSegResult = new ArrayList<Tuple<String, String>>();
 
     /**
-     * Test Document.
+     * All Term In Corpus.
      */
     private static ArrayList<String> allTermsInCorpus = new ArrayList<String>();
 
@@ -88,7 +93,6 @@ public class BM25 {
         }
         this.k1 = k1;
         this.b = b;
-        POS posCKIP = new POS();
         //Produce Dictionary
         File file = new File(".");
         String path = file.getCanonicalPath();
@@ -180,7 +184,6 @@ public class BM25 {
     public void rankBM25(final String question) {
         maxScore = 0;
         ArrayList<String> segmentList = new ArrayList<String>();
-        POS posCKIP = new POS();
         sentenceSegResult = posCKIP.seg(question);
         for (Tuple<String, String> segment : sentenceSegResult) {
             segmentList.add(segment.getWord());
