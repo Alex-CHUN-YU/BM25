@@ -178,6 +178,7 @@ public class BM25 {
      * @param question is our question
      */
     public void rankBM25(final String question) {
+        maxScore = 0;
         ArrayList<String> segmentList = new ArrayList<String>();
         POS posCKIP = new POS();
         sentenceSegResult = posCKIP.seg(question);
